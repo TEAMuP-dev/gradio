@@ -141,7 +141,7 @@ class Client:
                 "Please contact the owner to fix this."
             )
         if self.verbose:
-            print(f"Loaded as API: {self.src} ✔")
+            print(f"Loaded as API: {self.src} [OK]")
 
         if auth is not None:
             self._login(auth)

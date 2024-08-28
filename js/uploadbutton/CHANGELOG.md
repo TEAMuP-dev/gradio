@@ -1,5 +1,42 @@
 # @gradio/uploadbutton
 
+## 0.6.18
+
+### Features
+
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.6.0
+- @gradio/upload@0.12.3
+- @gradio/button@0.2.50
+- @gradio/client@1.5.1
+
+## 0.6.17
+
+### Dependency updates
+
+- @gradio/client@1.5.0
+- @gradio/upload@0.12.2
+- @gradio/button@0.2.49
+
+## 0.6.16
+
+### Dependency updates
+
+- @gradio/utils@0.5.2
+- @gradio/upload@0.12.1
+- @gradio/button@0.2.48
+
+## 0.6.15
+
+### Dependency updates
+
+- @gradio/client@1.4.0
+- @gradio/upload@0.12.0
+- @gradio/button@0.2.47
+
 ## 0.6.14
 
 ### Dependency updates

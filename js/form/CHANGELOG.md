@@ -1,5 +1,38 @@
 # @gradio/form
 
+## 0.1.24
+
+### Features
+
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.6.0
+- @gradio/atoms@0.8.0
+- @gradio/icons@0.7.1
+
+## 0.1.23
+
+### Dependency updates
+
+- @gradio/atoms@0.7.9
+- @gradio/icons@0.7.0
+
+## 0.1.22
+
+### Dependency updates
+
+- @gradio/atoms@0.7.8
+- @gradio/icons@0.6.1
+- @gradio/utils@0.5.2
+
+## 0.1.21
+
+### Dependency updates
+
+- @gradio/atoms@0.7.7
+
 ## 0.1.20
 
 ### Dependency updates

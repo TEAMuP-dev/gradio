@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { onDestroy } from "svelte";
-	import { fade } from "svelte/transition";
 	import { JSON as JSONIcon } from "@gradio/icons";
 	import { Empty } from "@gradio/atoms";
 	import JSONNode from "./JSONNode.svelte";
 	import { Copy, Check } from "@gradio/icons";
 
 	export let value: any = {};
+	export let open = false;
+	export let theme_mode: "system" | "light" | "dark" = "system";
+	export let show_indices = false;
 
 	let copied = false;
 	let timer: NodeJS.Timeout;
@@ -44,20 +46,25 @@
 	<button
 		on:click={handle_copy}
 		title="copy"
-		class={copied ? "" : "copy-text"}
+		class={copied ? "copied" : "copy-text"}
 		aria-roledescription={copied ? "Copied value" : "Copy value"}
 		aria-label={copied ? "Copied" : "Copy"}
 	>
 		{#if copied}
-			<span in:fade={{ duration: 300 }}>
-				<Check />
-			</span>
+			<Check />
 		{:else}
 			<Copy />
 		{/if}
 	</button>
 	<div class="json-holder">
-		<JSONNode {value} depth={0} />
+		<JSONNode
+			{value}
+			depth={0}
+			is_root={true}
+			{open}
+			{theme_mode}
+			{show_indices}
+		/>
 	</div>
 {:else}
 	<div class="empty-wrapper">
@@ -68,12 +75,28 @@
 {/if}
 
 <style>
+	:global(.copied svg) {
+		animation: fade ease 300ms;
+		animation-fill-mode: forwards;
+	}
+
+	@keyframes fade {
+		0% {
+			opacity: 0;
+		}
+		100% {
+			opacity: 1;
+		}
+	}
+
 	.json-holder {
 		padding: var(--size-2);
+		overflow-y: scroll;
 	}
 
 	.empty-wrapper {
 		min-height: calc(var(--size-32) - 20px);
+		height: 100%;
 	}
 	button {
 		display: flex;

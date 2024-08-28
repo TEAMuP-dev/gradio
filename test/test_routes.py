@@ -1,10 +1,13 @@
 """Contains tests for networking.py and app.py"""
 
 import functools
+import json
 import os
+import pickle
 import tempfile
 import time
 from contextlib import asynccontextmanager, closing
+from pathlib import Path
 from typing import Dict
 from unittest.mock import patch
 
@@ -252,6 +255,33 @@ class TestRoutes:
         assert len(file_response.text) == len(media_data.BASE64_IMAGE)
         io.close()
 
+    def test_response_attachment_format(self):
+        image_file = tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".png")
+        image_file.write(media_data.BASE64_IMAGE)
+        image_file.flush()
+
+        html_file = tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".html")
+        html_file.write("<html>Hello, world!</html>")
+        html_file.flush()
+
+        io = gr.Interface(lambda s: s.name, gr.File(), gr.File())
+        app, _, _ = io.launch(
+            prevent_thread_lock=True,
+            allowed_paths=[
+                os.path.dirname(image_file.name),
+                os.path.dirname(html_file.name),
+            ],
+        )
+        client = TestClient(app)
+
+        file_response = client.get(f"/file={image_file.name}")
+        assert file_response.headers["Content-Type"] == "image/png"
+        assert "inline" in file_response.headers["Content-Disposition"]
+
+        file_response = client.get(f"/file={html_file.name}")
+        assert file_response.headers["Content-Type"] == "application/octet-stream"
+        assert "attachment" in file_response.headers["Content-Disposition"]
+
     def test_allowed_and_blocked_paths(self):
         with tempfile.NamedTemporaryFile(suffix=".jpg", delete=False) as tmp_file:
             io = gr.Interface(lambda s: s.name, gr.File(), gr.File())
@@ -463,7 +493,7 @@ class TestRoutes:
         assert response.status_code == 403  # not a 404
 
     def test_proxy_route_is_restricted_to_load_urls(self):
-        gr.context.Context.hf_token = "abcdef"
+        gr.context.Context.hf_token = "abcdef"  # type: ignore
         app = routes.App()
         interface = gr.Interface(lambda x: x, "text", "text")
         app.configure_app(interface)
@@ -481,7 +511,7 @@ class TestRoutes:
         )
 
     def test_proxy_does_not_leak_hf_token_externally(self):
-        gr.context.Context.hf_token = "abcdef"
+        gr.context.Context.hf_token = "abcdef"  # type: ignore
         app = routes.App()
         interface = gr.Interface(lambda x: x, "text", "text")
         interface.proxy_urls = {
@@ -499,7 +529,7 @@ class TestRoutes:
     def test_can_get_config_that_includes_non_pickle_able_objects(self):
         my_dict = {"a": 1, "b": 2, "c": 3}
         with Blocks() as demo:
-            gr.JSON(my_dict.keys())
+            gr.JSON(my_dict.keys())  # type: ignore
 
         app, _, _ = demo.launch(prevent_thread_lock=True)
         client = TestClient(app)
@@ -568,6 +598,28 @@ class TestRoutes:
         captured = capsys.readouterr()
         assert "IN CUSTOM LIFESPAN" in captured.out
         assert "AFTER CUSTOM LIFESPAN" in captured.out
+
+    def test_monitoring_link(self):
+        with Blocks() as demo:
+            i = Textbox()
+            o = Textbox()
+            i.change(lambda x: x, i, o)
+
+        app, _, _ = demo.launch(prevent_thread_lock=True)
+        client = TestClient(app)
+        response = client.get("/monitoring")
+        assert response.status_code == 200
+
+    def test_monitoring_link_disabled(self):
+        with Blocks() as demo:
+            i = Textbox()
+            o = Textbox()
+            i.change(lambda x: x, i, o)
+
+        app, _, _ = demo.launch(prevent_thread_lock=True, enable_monitoring=False)
+        client = TestClient(app)
+        response = client.get("/monitoring")
+        assert response.status_code == 403
 
 
 class TestApp:
@@ -664,8 +716,7 @@ class TestQueueRoutes:
     async def test_queue_join_routes_sets_app_if_none_set(self):
         io = Interface(lambda x: x, "text", "text").queue()
         io.launch(prevent_thread_lock=True)
-        io._queue.server_path = None
-
+        assert io.local_url
         client = grc.Client(io.local_url)
         client.predict("test")
 
@@ -687,7 +738,7 @@ class TestDevMode:
         gradio_fast_api = next(
             route for route in app.routes if isinstance(route, starlette.routing.Mount)
         )
-        assert not gradio_fast_api.app.blocks.dev_mode
+        assert not gradio_fast_api.app.blocks.dev_mode  # type: ignore
 
 
 class TestPassingRequest:
@@ -792,6 +843,32 @@ class TestPassingRequest:
             data={"username": "admin", "password": "password"},
         )
         response = client.post("/api/predict/", json={"data": ["test"]})
+        assert response.status_code == 200
+        output = dict(response.json())
+        assert output["data"] == ["test"]
+
+    def test_request_is_pickleable(self):
+        """
+        For ZeroGPU, we need to ensure that the gr.Request object is pickle-able.
+        """
+
+        def identity(name, request: gr.Request):
+            pickled = pickle.dumps(request)
+            unpickled = pickle.loads(pickled)
+            assert request.client.host == unpickled.client.host
+            assert request.client.port == unpickled.client.port
+            assert dict(request.query_params) == dict(unpickled.query_params)
+            assert request.query_params["a"] == unpickled.query_params["a"]
+            assert dict(request.headers) == dict(unpickled.headers)
+            assert request.username == unpickled.username
+            return name
+
+        app, _, _ = gr.Interface(identity, "textbox", "textbox").launch(
+            prevent_thread_lock=True,
+        )
+        client = TestClient(app)
+
+        response = client.post("/api/predict?a=b", json={"data": ["test"]})
         assert response.status_code == 200
         output = dict(response.json())
         assert output["data"] == ["test"]
@@ -1003,7 +1080,7 @@ class TestShowAPI:
 def test_component_server_endpoints(connect):
     here = os.path.dirname(os.path.abspath(__file__))
     with gr.Blocks() as demo:
-        file_explorer = gr.FileExplorer(root=here)
+        file_explorer = gr.FileExplorer(root_dir=here)
 
     with closing(demo) as io:
         app, _, _ = io.launch(prevent_thread_lock=True)
@@ -1336,3 +1413,77 @@ def test_docs_url():
             assert r.status_code == 200
     finally:
         demo.close()
+
+
+def test_file_access():
+    with gr.Blocks() as demo:
+        gr.Markdown("Test")
+
+    allowed_dir = (Path(tempfile.gettempdir()) / "test_file_access_dir").resolve()
+    allowed_dir.mkdir(parents=True, exist_ok=True)
+    allowed_file = Path(allowed_dir / "allowed.txt")
+    allowed_file.touch()
+
+    not_allowed_file = Path(tempfile.gettempdir()) / "not_allowed.txt"
+    not_allowed_file.touch()
+
+    app, _, _ = demo.launch(
+        prevent_thread_lock=True,
+        blocked_paths=["test/test_files"],
+        allowed_paths=[str(allowed_dir)],
+    )
+    test_client = TestClient(app)
+    try:
+        with test_client:
+            r = test_client.get(f"/file={allowed_dir}/allowed.txt")
+            assert r.status_code == 200
+            r = test_client.get(f"/file={allowed_dir}/../not_allowed.txt")
+            assert r.status_code in [403, 404]  # 403 in Linux, 404 in Windows
+            r = test_client.get("/file=//test/test_files/cheetah1.jpg")
+            assert r.status_code == 403
+            r = test_client.get("/file=test/test_files/cheetah1.jpg")
+            assert r.status_code == 403
+            r = test_client.get("/file=//test/test_files/cheetah1.jpg")
+            assert r.status_code == 403
+            tmp = Path(tempfile.gettempdir()) / "upload_test.txt"
+            tmp.write_text("Hello")
+            with open(str(tmp), "rb") as f:
+                files = {"files": ("..", f)}
+                response = test_client.post("/upload", files=files)
+                assert response.status_code == 400
+    finally:
+        demo.close()
+        not_allowed_file.unlink()
+        allowed_file.unlink()
+
+
+def test_bash_api_serialization():
+    demo = gr.Interface(lambda x: x, "json", "json")
+
+    app, _, _ = demo.launch(prevent_thread_lock=True)
+    test_client = TestClient(app)
+
+    with test_client:
+        submit = test_client.post("/call/predict", json={"data": [{"a": 1}]})
+        event_id = submit.json()["event_id"]
+        response = test_client.get(f"/call/predict/{event_id}")
+        assert response.status_code == 200
+        assert "event: complete\ndata:" in response.text
+        assert json.dumps({"a": 1}) in response.text
+
+
+def test_bash_api_multiple_inputs_outputs():
+    demo = gr.Interface(
+        lambda x, y: (y, x), ["textbox", "number"], ["number", "textbox"]
+    )
+
+    app, _, _ = demo.launch(prevent_thread_lock=True)
+    test_client = TestClient(app)
+
+    with test_client:
+        submit = test_client.post("/call/predict", json={"data": ["abc", 123]})
+        event_id = submit.json()["event_id"]
+        response = test_client.get(f"/call/predict/{event_id}")
+        assert response.status_code == 200
+        assert "event: complete\ndata:" in response.text
+        assert json.dumps([123, "abc"]) in response.text

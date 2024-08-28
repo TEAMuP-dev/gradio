@@ -1,5 +1,17 @@
 # @gradio/preview
 
+## 0.11.0
+
+### Features
+
+- [#9091](https://github.com/gradio-app/gradio/pull/9091) [`bbbd1f5`](https://github.com/gradio-app/gradio/commit/bbbd1f5ebee9143db8628af64c5669d99f2574d7) - Be able to set optimizeDeps options in gradio.config.js.  Thanks @freddyaboulton!
+
+## 0.10.2
+
+### Fixes
+
+- [#8926](https://github.com/gradio-app/gradio/pull/8926) [`69f1e36`](https://github.com/gradio-app/gradio/commit/69f1e36f7d64e2b3fcc8a9ebb5f07a1f1d6c56fa) - fix typescript issue with custom components.  Thanks @pngwn!
+
 ## 0.10.1
 
 ### Fixes

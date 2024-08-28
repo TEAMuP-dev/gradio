@@ -1,5 +1,61 @@
 # @gradio/multimodaltextbox
 
+## 0.5.6
+
+### Features
+
+- [#9031](https://github.com/gradio-app/gradio/pull/9031) [`04b7d32`](https://github.com/gradio-app/gradio/commit/04b7d327ec1227a693fc2dfea51b1e2729851bde) - Allow drag and replace image in `gr.Image` and Multimodal textbox.  Thanks @hannahblair!
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.6.0
+- @gradio/upload@0.12.3
+- @gradio/atoms@0.8.0
+- @gradio/client@1.5.1
+- @gradio/statustracker@0.7.5
+- @gradio/icons@0.7.1
+- @gradio/image@0.15.0
+- @gradio/video@0.10.3
+
+## 0.5.5
+
+### Dependency updates
+
+- @gradio/atoms@0.7.9
+- @gradio/statustracker@0.7.4
+- @gradio/client@1.5.0
+- @gradio/icons@0.7.0
+- @gradio/upload@0.12.2
+- @gradio/image@0.14.0
+- @gradio/video@0.10.2
+
+## 0.5.4
+
+### Fixes
+
+- [#8899](https://github.com/gradio-app/gradio/pull/8899) [`20444f9`](https://github.com/gradio-app/gradio/commit/20444f9b56f95240d00759f31a1b831b9eb53160) - Fix Chatbot Multimodal Examples.  Thanks @dawoodkhan82!
+
+### Dependency updates
+
+- @gradio/atoms@0.7.8
+- @gradio/icons@0.6.1
+- @gradio/utils@0.5.2
+- @gradio/statustracker@0.7.3
+- @gradio/upload@0.12.1
+- @gradio/image@0.13.1
+- @gradio/video@0.10.1
+
+## 0.5.3
+
+### Dependency updates
+
+- @gradio/client@1.4.0
+- @gradio/image@0.13.0
+- @gradio/statustracker@0.7.2
+- @gradio/upload@0.12.0
+- @gradio/atoms@0.7.7
+
 ## 0.5.2
 
 ### Dependency updates

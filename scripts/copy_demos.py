@@ -8,7 +8,6 @@ import textwrap
 def copy_all_demos(source_dir: str, dest_dir: str):
     demos_to_copy = [
         "audio_debugger",
-        "altair_plot",
         "blocks_essay",
         "blocks_group",
         "blocks_js_methods",
@@ -24,12 +23,14 @@ def copy_all_demos(source_dir: str, dest_dir: str):
         "fake_gan",
         "fake_diffusion_with_gif",
         "file_explorer_component_events",
+        "gradio_pdf_demo",
         "image_mod_default_image",
         "image_editor_events",
         "image_segmentation",
         "interface_random_slider",
         "kitchen_sink",
         "kitchen_sink_random",
+        "login_with_huggingface",
         "matrix_transpose",
         "mini_leaderboard",
         "model3D",

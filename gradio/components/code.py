@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Callable, Literal
+from typing import TYPE_CHECKING, Any, Callable, Literal, Sequence
 
 from gradio_client.documentation import document
 
@@ -91,7 +91,7 @@ class Code(Component):
         | None = None,
         *,
         every: Timer | float | None = None,
-        inputs: Component | list[Component] | set[Component] | None = None,
+        inputs: Component | Sequence[Component] | set[Component] | None = None,
         lines: int = 5,
         label: str | None = None,
         interactive: bool | None = None,
@@ -122,6 +122,7 @@ class Code(Component):
             elem_classes: An optional list of strings that are assigned as the classes of this component in the HTML DOM. Can be used for targeting CSS styles.
             render: If False, component will not render be rendered in the Blocks context. Should be used if the intention is to assign event listeners now but render the component later.
             key: if assigned, will be used to assume identity across a re-render. Components that have the same key across a re-render will have their value preserved.
+            lines: Minimum number of visible lines to show in the code editor.
         """
         if language not in Code.languages:
             raise ValueError(f"Language {language} not supported.")

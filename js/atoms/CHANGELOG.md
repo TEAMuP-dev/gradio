@@ -1,5 +1,36 @@
 # @gradio/atoms
 
+## 0.8.0
+
+### Features
+
+- [#8930](https://github.com/gradio-app/gradio/pull/8930) [`41d5ab9`](https://github.com/gradio-app/gradio/commit/41d5ab987ba9728753be4509490c79041655809b) - Add `placeholder` param to Image and ImageEditor to replace upload image text.  Thanks @hannahblair!
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/utils@0.6.0
+- @gradio/icons@0.7.1
+
+## 0.7.9
+
+### Dependency updates
+
+- @gradio/icons@0.7.0
+
+## 0.7.8
+
+### Dependency updates
+
+- @gradio/icons@0.6.1
+- @gradio/utils@0.5.2
+
+## 0.7.7
+
+### Fixes
+
+- [#8852](https://github.com/gradio-app/gradio/pull/8852) [`16b8200`](https://github.com/gradio-app/gradio/commit/16b820038df43905447ab7623d39d91ceb0d6238) - Fix gr.Image height inconsistencies.  Thanks @hannahblair!
+
 ## 0.7.6
 
 ### Dependency updates

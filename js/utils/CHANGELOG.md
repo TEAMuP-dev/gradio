@@ -1,5 +1,22 @@
 # @gradio/utils
 
+## 0.6.0
+
+### Features
+
+- [#9128](https://github.com/gradio-app/gradio/pull/9128) [`747013b`](https://github.com/gradio-app/gradio/commit/747013bbacebae6bfdda554b45e541e80b2894e0) - Allow accessing the entire row of selected values in `gr.DataFrame`.  Thanks @abidlabs!
+- [#9118](https://github.com/gradio-app/gradio/pull/9118) [`e1c404d`](https://github.com/gradio-app/gradio/commit/e1c404da1143fb52b659d03e028bdba1badf443d) - setup npm-previews of all packages.  Thanks @pngwn!
+
+### Dependency updates
+
+- @gradio/theme@0.2.4
+
+## 0.5.2
+
+### Fixes
+
+- [#8927](https://github.com/gradio-app/gradio/pull/8927) [`223688b`](https://github.com/gradio-app/gradio/commit/223688b70a7a3cf4daa92ae77f8fca7b537cc2b4) - Fix `Could not resolve "virtual:component-loader"` in gradio/utils package.  Thanks @benzler!
+
 ## 0.5.1
 
 ### Fixes

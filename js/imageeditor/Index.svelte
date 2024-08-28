@@ -44,6 +44,7 @@
 		"webcam"
 	];
 	export let interactive: boolean;
+	export let placeholder: string | undefined;
 
 	export let brush: Brush;
 	export let eraser: Eraser;
@@ -55,6 +56,7 @@
 		accept_blobs: (a: any) => void;
 	};
 	export let canvas_size: [number, number] | undefined;
+	export let show_fullscreen_button = true;
 
 	export let gradio: Gradio<{
 		change: never;
@@ -153,6 +155,7 @@
 			selectable={_selectable}
 			{show_share_button}
 			i18n={gradio.i18n}
+			{show_fullscreen_button}
 		/>
 	</Block>
 {:else}
@@ -212,6 +215,7 @@
 			status={loading_status?.status}
 			upload={gradio.client.upload}
 			stream_handler={gradio.client.stream}
+			{placeholder}
 		></InteractiveImageEditor>
 	</Block>
 {/if}
